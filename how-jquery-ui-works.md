@@ -92,8 +92,29 @@ If you're removing the element, either directly via `.remove()` or by modifying 
 
 #### widget
 
-TODO
+Some widgets generate wrapper elements, or elements disconnected from the original element.
+In these cases, the `widget` method will return the generated element.
+In cases like the progressbar, where there is no generated wrapper, the `widget` method returns the original element.
+
+	$( "#elem" ).progressbar( "widget" );
 
 ## Events
 
-TODO
+All widgets have events associated with their various behaviors.
+For most widgets, when the events are triggered, the names are prefixed with the widget name.
+For example, we can bind to progressbar's change event which is triggered whenever the value changes.
+
+	$( "#elem" ).bind( "progressbarchange", function() {
+		alert( "The value has changed!" );
+	});
+
+Each event has a corresponding callback, which is exposed as an option.
+We could hook into progressbar's change callback instead of binding to the `progressbarchange` event, if we wanted to.
+
+	$( "#elem" ).progressbar({
+		change: function() {
+			alert( "The value has changed!" );
+		}
+	});
+
+While most events will be widget specific, all widgets have a create event.
