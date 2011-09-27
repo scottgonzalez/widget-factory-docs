@@ -50,7 +50,32 @@ Just like other methods in jQuery, most widget methods return the jQuery object 
 
 ### Common Methods
 
-While each widget will have its own set of unique methods available, there are several methods that exist on all widgets.
+Each widget will have its own set of methods based on the functionality that the widget provides.
+However, there are a few methods that exist on all widgets.
+
+#### option
+
+As we mentioned earlier, we can change options after initialization through the `option` method.
+For example, we can change the progressbar's value to 30 by calling the `option` method.
+
+	$( "#elem" ).progressbar( "option", "value", 30 );
+
+Note that this is different from the previous example where we were calling the `value` method.
+In this example, we're calling the `option` method and saying that we want to change the value option to 30.
+
+We can also get the current value for an option.
+
+	$( "#elem" ).progressbar( "option", "value" );
+
+In addition, we can update multiple options at once by passing an object to the option method.
+
+	$( "#elem" ).progressbar( "option", {
+		value: 100,
+		disabled: true
+	});
+
+You may have noticed that the `option` method has the same signature as getters and setters in jQuery core, such as `.css()` and `.attr()`.
+The only difference is that you have to pass the string "option" as the first parameter.
 
 #### disable
 
@@ -69,35 +94,16 @@ The `enable` method is the opposite of the `disable` method.
 
 Calling teh enable method is equivalent to setting the `disabled` option to `false`.
 
-#### option
-
-Any option can be changed after initialization through the `option` method.
-For example, we can change the progressbar's value to 30 by calling the option method.
-
-	$( "#elem" ).progressbar( "option", "value", 30 );
-
-We can also get the current value for an option.
-
-	$( "#elem" ).progressbar( "option", "value" );
-
-In addition, we can update multiple options at once by passing an object to the option method.
-
-	$( "#elem" ).progressbar( "option", {
-		value: 100,
-		disabled: true
-	});
-
-You may have noticed that the `option` method has the same signature as getters and setters in jQuery core, such as `.css()` and `.attr()`.
-The only difference is that you have to pass the string "option" as the first parameter.
-
 #### destroy
 
 If you no longer need the widget, you can destroy it and return back to the original markup.
+This ends the life cycle of the widget.
 
 	$( "#elem" ).progressbar( "destroy" );
 
 Once you destroy a widget, you can no longer call any methods on it unless you initialize the widget again.
-If you're removing the element, either directly via `.remove()` or by modifying an ancestor with `.html()` or `.empty()`, the widget will automatically destroy itself.
+If you're removing the element, either directly via `.remove()` or by modifying an ancestor with `.html()` or `.empty()`,
+the widget will automatically destroy itself.
 
 #### widget
 
@@ -109,7 +115,7 @@ In cases like the progressbar, where there is no generated wrapper, the `widget`
 
 ## Events
 
-All widgets have events associated with their various behaviors.
+All widgets have events associated with their various behaviors to notify you when the state is changing.
 For most widgets, when the events are triggered, the names are prefixed with the widget name.
 For example, we can bind to progressbar's change event which is triggered whenever the value changes.
 
@@ -118,7 +124,7 @@ For example, we can bind to progressbar's change event which is triggered whenev
 	});
 
 Each event has a corresponding callback, which is exposed as an option.
-We could hook into progressbar's change callback instead of binding to the `progressbarchange` event, if we wanted to.
+We could hook into progressbar's `change` callback instead of binding to the `progressbarchange` event, if we wanted to.
 
 	$( "#elem" ).progressbar({
 		change: function() {
@@ -126,4 +132,7 @@ We could hook into progressbar's change callback instead of binding to the `prog
 		}
 	});
 
-While most events will be widget specific, all widgets have a create event.
+### Common Events
+
+While most events will be widget specific, all widgets have a `create` event.
+This event will be triggered immediately after the widget is created.
