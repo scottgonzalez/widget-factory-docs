@@ -1,10 +1,16 @@
 # How jQuery UI Works
 
-All jQuery UI widgets have a common API.
-We'll walk through the common functionality using a progressbar widget for specific examples.
+jQuery UI contains many widgets that maintain state
+and therefore have a slightly different usage pattern than typical jQuery plugins.
+All of the jQuery UI's widgets use the same patterns,
+so if you learn how to use one, then you'll know how to use all of them.
+This document will walk you through the common functionality,
+using a progressbar widget for the code examples.
 
 ## Initialization
 
+In order to track the state of the widget, we must introduce a full life cycle for the widget.
+The life cycle starts when the widget is initalized.
 To initialize a widget, we simply call the plugin on one or more elements.
 
 	$( "#elem" ).progressbar();
@@ -18,11 +24,14 @@ We can pass a set of options during initialization in order to override the defa
 We can pass as many or as few options as we want during initialization.
 Any options that we don't pass will just use their default values.
 
-We can change options after initialization as well, which we'll see later.
+The options are part of the widget's state,
+so we can set options after initialization as well.
+We'll see this later with the `option` method.
 
 ## Methods
 
-After we have initialized our widget, we can call methods on the widget.
+Now that the widget is initialized, we can query its state or perform actions on the widget.
+All actions after initialization take the form of a method call.
 To call a method on a widget, we pass the name of the method to the jQuery plugin.
 For example, to call the `value` method on our progressbar widget, we would use:
 
