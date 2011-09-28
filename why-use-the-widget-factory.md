@@ -34,3 +34,25 @@ In addition to defining the interface,
 the widget factory also implements much of this functionality for you.
 If you're not familiar with the API provided by the widget factory,
 you should read [How jQuery UI Works](how-jquery-ui-works.md).
+
+## Setting Options on Initialization
+
+Whenever you build a plugin that accepts options,
+you should define defaults for as many options as possible,
+then merge the user-provided options with the defaults on initialization.
+It's also a good idea to expose the defaults so that users can even change the default values.
+A common pattern in jQuery plugins looks like this:
+
+	$.fn.plugin = function( options ) {
+		options = $.extend( {}, $.fn.plugin.defaults, options );
+		// plugin logic goes here
+	};
+	
+	$.fn.plugin.defaults = {
+		param1: "foo",
+		param2: "bar",
+		param3: "baz"
+	};
+
+The widget factory provides this functionality and even takes it a bit further.
+TODO: Talk about passing multiple option hashes on init.
