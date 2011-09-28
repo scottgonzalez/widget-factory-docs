@@ -20,4 +20,17 @@ This results in a lot of boilerplate for building stateful plugins.
 Even worse, each plugin author may manage life cycles and state differently,
 resulting in different API styles for differnet plugins.
 The widget factory aims to solve both problems,
-removing the boilerplate and creating and creating a consistent API across plugins.
+removing the boilerplate and creating a consistent API across plugins.
+
+## Consistent API
+
+The widget factory defines how to create and destroy widgets,
+how to get and set options, how to invoke methods,
+and how to listen to events triggered by the widget.
+By using the widget factory to build your stateful plugins,
+you're automatically conforming to a defined standard,
+making it easier for new users to start using your plugins.
+In addition to defining the interface,
+the widget factory also implements much of this functionality for you.
+If you're not familiar with the API provided by the widget factory,
+you should read [How jQuery UI Works](how-jquery-ui-works.md).
