@@ -25,10 +25,9 @@ removing the boilerplate and creating a consistent API across plugins.
 ## Consistent API
 
 The widget factory defines how to create and destroy widgets,
-how to get and set options, how to invoke methods,
-and how to listen to events triggered by the widget.
+get and set options, invoke methods, and listen to events triggered by the widget.
 By using the widget factory to build your stateful plugins,
-you're automatically conforming to a defined standard,
+you are automatically conforming to a defined standard,
 making it easier for new users to start using your plugins.
 In addition to defining the interface,
 the widget factory also implements much of this functionality for you.
@@ -55,4 +54,19 @@ A common pattern in jQuery plugins looks like this:
 	};
 
 The widget factory provides this functionality and even takes it a bit further.
-TODO: Talk about passing multiple option hashes on init.
+Let's see what this looks like with the widget factory.
+
+	$.widget( "ns.plugin", {
+	
+		// default options
+		options: {
+			param1: "foo",
+			param2: "bar",
+			param3: "baz"
+		},
+		
+		_create: function() {
+			// options are already merged and stored in this.options
+			// plugin logic goes here
+		}
+	});

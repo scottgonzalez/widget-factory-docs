@@ -67,7 +67,7 @@ We can also get the current value for an option.
 
 	$( "#elem" ).progressbar( "option", "value" );
 
-In addition, we can update multiple options at once by passing an object to the option method.
+In addition, we can update multiple options at once by passing an object to the `option` method.
 
 	$( "#elem" ).progressbar( "option", {
 		value: 100,
@@ -79,12 +79,12 @@ The only difference is that you have to pass the string "option" as the first pa
 
 #### disable
 
-As you might guess, the `disable` method disabled the widget.
+As you might guess, the `disable` method disables the widget.
 In the case of progressbar, this changes the styling to make the progressbar look disabled.
 
 	$( "#elem" ).progressbar( "disable" );
 
-Calling the disable method is equivalent to setting the `disabled` option to `true`.
+Calling the `disable` method is equivalent to setting the `disabled` option to `true`.
 
 #### enable
 
@@ -92,7 +92,7 @@ The `enable` method is the opposite of the `disable` method.
 
 	$( "#elem" ).progressbar( "enable" );
 
-Calling teh enable method is equivalent to setting the `disabled` option to `false`.
+Calling the `enable` method is equivalent to setting the `disabled` option to `false`.
 
 #### destroy
 
@@ -124,7 +124,7 @@ For example, we can bind to progressbar's change event which is triggered whenev
 	});
 
 Each event has a corresponding callback, which is exposed as an option.
-We could hook into progressbar's `change` callback instead of binding to the `progressbarchange` event, if we wanted to.
+We can hook into progressbar's `change` callback instead of binding to the `progressbarchange` event, if we wanted to.
 
 	$( "#elem" ).progressbar({
 		change: function() {
