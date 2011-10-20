@@ -172,13 +172,13 @@ method in our plugin to react to option changes.
         },
         _create: function() {
             this.element.addClass( "progressbar" );
-            this._update();
+            this.refresh();
         },
         _setOption: function( key, value ) {
             this.options[ key ] = value;
-            this._update();
+            this.refresh();
         },
-        _update: function() {
+        refresh: function() {
             var progress = this.options.value + "%";
             this.element.text( progress );
         }
@@ -205,13 +205,13 @@ provided by the event object.
         },
         _create: function() {
             this.element.addClass( "progressbar" );
-            this._update();
+            this.refresh();
         },
         _setOption: function( key, value ) {
             this.options[ key ] = value;
-            this._update();
+            this.refresh();
         },
-        _update: function() {
+        refresh: function() {
             var progress = this.options.value + "%";
             this.element.text( progress );
             if ( this.options.value == 100 ) {
@@ -293,14 +293,15 @@ plugin instance.
 ### Cleaning up
 
 In some cases, it will make sense to allow users to apply and then later
-unapply your plugin. You can accomplish this via the `destroy` method.
-Within the `destroy` method, you should undo anything your plugin may
-have done during initialization or later use. The destroy method is
-automatically called if the element that your plugin instance is tied to
-is removed from the DOM, so this can be used for garbage collection as
-well. The default `destroy` method removes the link between the DOM
-element and the plugin instance, so it’s important to call the base
-function from your plugin’s destroy method.
+unapply your plugin. You can accomplish this via the `_destroy` method.
+Within the `_destroy` method, you should undo anything your plugin may
+have done during initialization or later use. `_destroy` method is called by
+the `destory` method, which is automatically called if the element that your
+plugin instance is tied to is removed from the DOM, so this can be used for
+garbage collection aswell. That base `destroy` method also handles some
+general cleanup operations, like removing the instance reference from  the
+widget's DOM element, unbinding all events in the widget's namespace from the
+element, and unbinding generally all events that were added using `_bind`.
 
     $.widget( "nmk.progressbar", {
         options: {
@@ -308,26 +309,23 @@ function from your plugin’s destroy method.
         },
         _create: function() {
             this.element.addClass( "progressbar" );
-            this._update();
+            this.refresh();
         },
         _setOption: function( key, value ) {
             this.options[ key ] = value;
-            this._update();
+            this.refresh();
         },
-        _update: function() {
+        refresh: function() {
             var progress = this.options.value + "%";
             this.element.text( progress );
             if ( this.options.value == 100 ) {
                 this._trigger( "complete", null, { value: 100 } );
             }
         },
-        destroy: function() {
+        _destroy: function() {
             this.element
                 .removeClass( "progressbar" )
                 .text("");
-
-            // call the base destroy function
-            $.Widget.prototype.destroy.call( this );
         }
     });
 
