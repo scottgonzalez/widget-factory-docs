@@ -1,36 +1,5 @@
 # How to use the widget factory
 
-## Background
-
-Over the past few years, jQuery has dominated the web development
-community with its simple, yet brilliant, API. The “find elements, do
-something” pattern and ability to chain function calls together combine
-to create code that reads like English. jQuery’s simplicity and almost
-nonexistent learning curve have made it extremely popular among
-developers and designers alike. Equally as important as its ease of use
-is its extensibility. With an extension system that makes creating a
-plugin as simple as writing a function, jQuery has been able to maintain
-a lean core while offering an almost unlimited amount of functionality.
-
-The combination of jQuery’s simple plugin system and its active
-community has resulted in over 2,000 plugins being listed in its [plugin
-repository](http://plugins.jquery.com). However, like all core methods,
-the majority of these plugins only provide stateless functionality.
-While many of these plugins are useful, there’s a large set of
-functionality that doesn’t fit into the basic plugin pattern.
-
-### A new plugin system
-
-In order to fill this gap, jQuery UI has implemented a more advanced
-plugin system. The new system manages state, allows multiple functions
-to be exposed via a single plugin, and provides various extension
-points. This system is called the widget factory and is exposed as
-`jQuery.widget`. In this article, we’ll explore the various features
-provided by the widget factory by building a simple progress bar plugin
-using jQuery UI 1.8.
-
-## Building a plugin
-
 To start, we’ll create a progress bar that just lets us set the progress
 once. As we can see below, this is done by calling `jQuery.widget` with
 two parameters: the name of the plugin to create and an object literal
@@ -41,7 +10,7 @@ jQuery plugin in two important ways. First, the context is an object,
 not a DOM element. Second, the context is always a single object, never
 a collection.
 
-    $.widget( "nmk.progressbar", {
+    $.widget( "custom.progressbar", {
         _create: function() {
             var progress = this.options.value + "%";
             this.element
@@ -51,7 +20,7 @@ a collection.
     });
 
 The name of the plugin must contain a namespace, in this case we’ve used
-the nmk namespace. There is currently a limitation that exactly one
+the `custom` namespace. There is currently a limitation that exactly one
 namespace must be used. We can also see that the widget factory has
 provided two properties for us. `this.element` is a jQuery object
 containing exactly one element. If our plugin is called on a jQuery
@@ -75,7 +44,7 @@ of our options. When designing your API, you should figure out the most
 common use case for your plugin so that you can set appropriate default
 values and make all options truly optional.
 
-    $.widget( "nmk.progressbar", {
+    $.widget( "custom.progressbar", {
         // default options
         options: {
             value: 0
@@ -96,7 +65,7 @@ plugin method, we just include the function in the object literal that
 we pass to `jQuery.widget`. We can also define “private” methods by
 prepending an underscore to the function name.
 
-    $.widget( "nmk.progressbar", {
+    $.widget( "custom.progressbar", {
         options: {
             value: 0
         },
@@ -155,18 +124,20 @@ we’ll see alternative uses that may feel more natural.
 
 ### Working with options
 
-One of the methods that is automatically available to our plugin is the
+One of the methods that are automatically available to our plugin is the
 `option` method. The `option` method allows you to get and set options
 after initialization. This method works exactly like jQuery’s `css` and
-`attr` methods: you can pass just a name to use it as a setter, a name
+`attr` methods: you can pass just a name to use it as a getter, a name
 and value to use it as a single setter, or a hash of name/value pairs to
 set multiple values. When used as a getter, the plugin will return the
 current value of the option that corresponds to the name that was passed
 in. When used as a setter, the plugin’s `_setOption` method will be
 called for each option that is being set. We can specify a `_setOption`
 method in our plugin to react to option changes.
+For actions to perform independent of the number of options changed, we
+can override `_setOptions`.
 
-    $.widget( "nmk.progressbar", {
+    $.widget( "custom.progressbar", {
         options: {
             value: 0
         },
@@ -175,12 +146,27 @@ method in our plugin to react to option changes.
             this.refresh();
         },
         _setOption: function( key, value ) {
-            this.options[ key ] = value;
+            if ( key === "value" ) {
+                value = this._constrain( value );
+            }
+            this._super( "_setOption", key, value );
+        },
+        _setOptions: function( options ) {
+            this._super( "_setOptions", options );
             this.refresh();
         },
         refresh: function() {
             var progress = this.options.value + "%";
             this.element.text( progress );
+        },
+        _constrain: function( value ) {
+            if ( value > 100 ) {
+                value = 100;
+            }
+            if ( value < 0 ) {
+                value = 0;
+            }
+            return value;
         }
     });
 
@@ -199,7 +185,7 @@ could pass the native mousemove event when triggering a drag callback;
 this would allow users to react to the drag based on the x/y coordinates
 provided by the event object.
 
-    $.widget( "nmk.progressbar", {
+    $.widget( "custom.progressbar", {
         options: {
             value: 0
         },
@@ -208,7 +194,13 @@ provided by the event object.
             this.refresh();
         },
         _setOption: function( key, value ) {
-            this.options[ key ] = value;
+            if ( key === "value" ) {
+                value = this._constrain( value );
+            }
+            this._super( "_setOption", key, value );
+        },
+        _setOptions: function( options ) {
+            this._super( "_setOptions", options );
             this.refresh();
         },
         refresh: function() {
@@ -217,6 +209,15 @@ provided by the event object.
             if ( this.options.value == 100 ) {
                 this._trigger( "complete", null, { value: 100 } );
             }
+        },
+        _constrain: function( value ) {
+            if ( value > 100 ) {
+                value = 100;
+            }
+            if ( value < 0 ) {
+                value = 0;
+            }
+            return value;
         }
     });
 
@@ -258,8 +259,9 @@ instances. All of the functionality that automatically gets added to
 your plugin comes from a base widget prototype, which is defined as
 `jQuery.Widget.prototype`. When a plugin instance is created, it is
 stored on the original DOM element using `jQuery.data`, with the plugin
-name as the key.\
- Because the plugin instance is directly linked to the DOM element, you
+name as the key.
+
+Because the plugin instance is directly linked to the DOM element, you
 can access the plugin instance directly instead of going through the
 exposed plugin method if you want. This will allow you to call methods
 directly on the plugin instance instead of passing method names as
@@ -276,6 +278,15 @@ strings and will also give you direct access to the plugin’s properties.
     // access properties on the plugin instance
     alert( bar.options.value );
 
+You can also create an instance without going through the plugin method,
+by calling the constructor directly, with the options and element
+arguments:
+
+    var bar = $.ui.progressbar( {}, $( "<div></div>" ).appendTo( "body") );
+
+    // same result as before
+    alert( bar.options.value );
+
 ### Extending a plugin’s prototype
 
 One of the biggest benefits of having a constructor and prototype for a
@@ -286,7 +297,7 @@ our progress bar to reset the progress to 0% we could add this method to
 the prototype and it would instantly be available to be called on any
 plugin instance.
 
-    $.nmk.progressbar.prototype.reset = function() {
+    $.custom.progressbar.prototype.reset = function() {
         this._setOption( "value", 0 );
     };
 
@@ -295,15 +306,15 @@ plugin instance.
 In some cases, it will make sense to allow users to apply and then later
 unapply your plugin. You can accomplish this via the `_destroy` method.
 Within the `_destroy` method, you should undo anything your plugin may
-have done during initialization or later use. `_destroy` method is called by
-the `destory` method, which is automatically called if the element that your
+have done during initialization or later use. `_destroy` is called by
+the `destroy` method, which is automatically called if the element that your
 plugin instance is tied to is removed from the DOM, so this can be used for
 garbage collection aswell. That base `destroy` method also handles some
 general cleanup operations, like removing the instance reference from  the
 widget's DOM element, unbinding all events in the widget's namespace from the
 element, and unbinding generally all events that were added using `_bind`.
 
-    $.widget( "nmk.progressbar", {
+    $.widget( "custom.progressbar", {
         options: {
             value: 0
         },
@@ -312,7 +323,13 @@ element, and unbinding generally all events that were added using `_bind`.
             this.refresh();
         },
         _setOption: function( key, value ) {
-            this.options[ key ] = value;
+            if ( key === "value" ) {
+                value = this._constrain( value );
+            }
+            this._super( "_setOption", key, value );
+        },
+        _setOptions: function( options ) {
+            this._super( "_setOptions", options );
             this.refresh();
         },
         refresh: function() {
@@ -322,10 +339,19 @@ element, and unbinding generally all events that were added using `_bind`.
                 this._trigger( "complete", null, { value: 100 } );
             }
         },
+        _constrain: function( value ) {
+            if ( value > 100 ) {
+                value = 100;
+            }
+            if ( value < 0 ) {
+                value = 0;
+            }
+            return value;
+        },
         _destroy: function() {
             this.element
                 .removeClass( "progressbar" )
-                .text("");
+                .text( "" );
         }
     });
 
@@ -338,8 +364,8 @@ problems for you and can greatly improve productivity, it also greatly
 improves code reuse, making it a great fit for jQuery UI as well as many
 other stateful plugins.
 
-You may have noticed that in this article we used the nmk namespace. The
-ui namespace is reserved for official jQuery UI plugins. When building
+You may have noticed that in this article we used the `custom` namespace. The
+`ui` namespace is reserved for official jQuery UI plugins. When building
 your own plugins, you should create your own namespace. This makes it
 clear where the plugin came from and if it is part of a larger
 collection.
