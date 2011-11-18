@@ -149,10 +149,10 @@ can override `_setOptions`.
             if ( key === "value" ) {
                 value = this._constrain( value );
             }
-            this._super( "_setOption", key, value );
+            this._super( key, value );
         },
         _setOptions: function( options ) {
-            this._super( "_setOptions", options );
+            this._super( options );
             this.refresh();
         },
         refresh: function() {
@@ -197,10 +197,10 @@ provided by the event object.
             if ( key === "value" ) {
                 value = this._constrain( value );
             }
-            this._super( "_setOption", key, value );
+            this._super( key, value );
         },
         _setOptions: function( options ) {
-            this._super( "_setOptions", options );
+            this._super( options );
             this.refresh();
         },
         refresh: function() {
@@ -326,10 +326,10 @@ element, and unbinding generally all events that were added using `_bind`.
             if ( key === "value" ) {
                 value = this._constrain( value );
             }
-            this._super( "_setOption", key, value );
+            this._super( key, value );
         },
         _setOptions: function( options ) {
-            this._super( "_setOptions", options );
+            this._super( options );
             this.refresh();
         },
         refresh: function() {
