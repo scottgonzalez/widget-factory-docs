@@ -282,7 +282,7 @@ You can also create an instance without going through the plugin method,
 by calling the constructor directly, with the options and element
 arguments:
 
-    var bar = $.ui.progressbar( {}, $( "<div></div>" ).appendTo( "body") );
+    var bar = $.custom.progressbar( {}, $( "<div></div>" ).appendTo( "body") );
 
     // same result as before
     alert( bar.options.value );
