@@ -176,14 +176,15 @@ One of the easiest ways to make your plugin extensible is to add
 callbacks so users can react when the state of your plugin changes. We
 can see below how to add a callback to our progress bar to signify when
 the progress has reached 100%. The `_trigger` method takes three
-parameters: the name of the callback, a native event object that
+parameters: the name of the callback, a jQuery event object that
 initiated the callback, and a hash of data relevant to the event. The
 callback name is the only required parameter, but the others can be very
 useful for users who want to implement custom functionality on top of
 your plugin. For example, if we were building a draggable plugin, we
-could pass the native mousemove event when triggering a drag callback;
+could pass the mousemove event when triggering a drag callback;
 this would allow users to react to the drag based on the x/y coordinates
-provided by the event object.
+provided by the event object. Note that the original event passed to `_trigger`
+must be a jQuery event, not a native browser event.
 
     $.widget( "custom.progressbar", {
         options: {
