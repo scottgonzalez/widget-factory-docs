@@ -1,1 +1,1 @@
-The widget factory docs have moved to [https://github.com/jquery/learn.jquery.com/tree/master/page/jquery-ui/widget-factory](the learn.jquery.com site).
+The widget factory docs have moved to http://api.jqueryui.com/jQuery.widget/ and http://learn.jquery.com/jquery-ui/widget-factory/.
